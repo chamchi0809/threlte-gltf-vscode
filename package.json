@@ -1,0 +1,58 @@
+{
+  "name": "threlte-gltf-vscode",
+  "displayName": "Threlte GLTF",
+  "description": "Side panel GUI for the @threlte/gltf CLI",
+  "publisher": "chamchi",
+  "repository": {
+    "url": "https://github.com/chamchi0809/github-actions-vscode"
+  },
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "threlte-gltf",
+          "title": "Threlte GLTF",
+          "icon": "$(file-code)"
+        }
+      ]
+    },
+    "views": {
+      "threlte-gltf": [
+        {
+          "type": "webview",
+          "id": "threlte-gltf.panel",
+          "name": "GLTF Transform"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "npm run build:webview && npm run build:ext",
+    "build:ext": "node esbuild.mjs --production",
+    "build:webview": "cd webview && npm run build",
+    "watch:ext": "node esbuild.mjs --watch",
+    "dev:webview": "cd webview && npm run dev",
+    "watch:test": "tsc -p tsconfig.test.json --watch --preserveWatchOutput",
+    "pretest": "npm run build:ext && tsc -p tsconfig.test.json",
+    "test": "node ./dist/test/runTest.js",
+    "vscode:prepublish": "npm run build",
+    "vscode:publish": "vsce package && vsce publish"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^25.6.0",
+    "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.4.0",
+    "esbuild": "^0.24.0",
+    "mocha": "^10.7.0",
+    "typescript": "^5.3.0"
+  }
+}

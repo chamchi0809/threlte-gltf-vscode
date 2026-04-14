@@ -1,0 +1,36 @@
+:root {
+  --fg: var(--vscode-foreground);
+  --bg: var(--vscode-sideBar-background, var(--vscode-editor-background));
+  --input-bg: var(--vscode-input-background);
+  --input-border: var(--vscode-input-border, #444);
+  --input-fg: var(--vscode-input-foreground);
+  --btn-bg: var(--vscode-button-background);
+  --btn-fg: var(--vscode-button-foreground);
+  --btn-hover: var(--vscode-button-hoverBackground);
+  --border: var(--vscode-panel-border, #333);
+  --muted: var(--vscode-descriptionForeground);
+  --focus: var(--vscode-focusBorder);
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+body {
+  font-family: var(--vscode-font-family, system-ui, sans-serif);
+  font-size: var(--vscode-font-size, 13px);
+  color: var(--fg);
+  background: var(--bg);
+}
+
+input,
+select,
+button,
+textarea {
+  border-radius: 0;
+}
