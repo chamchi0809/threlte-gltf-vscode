@@ -19,6 +19,15 @@ export class PanelProvider implements vscode.WebviewViewProvider {
 
     webview.html = this.getHtml(webview);
 
+    // Send workspace public-folder path for auto-root
+    const wsFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    if (wsFolder) {
+      webview.postMessage({
+        type: 'workspacePublicPath',
+        path: wsFolder.replace(/\\/g, '/') + '/public',
+      });
+    }
+
     webview.onDidReceiveMessage(async (msg) => {
       switch (msg.type) {
         case 'pickFile': {

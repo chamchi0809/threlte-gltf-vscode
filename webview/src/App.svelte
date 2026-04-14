@@ -40,6 +40,7 @@
   // paths
   let dracoPath = $state((saved.dracoPath as string) ?? '');
   let rootPath = $state((saved.rootPath as string) ?? '');
+  let workspacePublicPath = $state('');
 
   const flags = [
     { get: () => types, set: (v: boolean) => (types = v), name: 'types' },
@@ -82,7 +83,8 @@
     running = true;
     logs = '';
 
-    const parts = ['npx @threlte/gltf@latest', `"${modelPath}"`];
+    const normalizedModelPath = modelPath.replace(/\\/g, '/');
+    const parts = ['npx @threlte/gltf@latest', `"${normalizedModelPath}"`];
     if (outputPath) parts.push(`--output "${outputPath}"`);
     if (types) parts.push('--types');
     if (keepnames) parts.push('--keepnames');
@@ -109,7 +111,8 @@
     if (printwidth !== 120) parts.push(`--printwidth ${printwidth}`);
     if (precision !== 2) parts.push(`--precision ${precision}`);
     if (dracoPath) parts.push(`--draco "${dracoPath}"`);
-    if (rootPath) parts.push(`--root "${rootPath}"`);
+    const effectiveRoot = rootPath || workspacePublicPath;
+    if (effectiveRoot) parts.push(`--root "${effectiveRoot.replace(/\\/g, '/')}"`);
 
     vscode.postMessage({ type: 'run', command: parts.join(' ') });
   }
@@ -123,6 +126,9 @@
           else if (msg.field === 'output') outputPath = msg.path;
           else if (msg.field === 'draco') dracoPath = msg.path;
           else if (msg.field === 'root') rootPath = msg.path;
+          break;
+        case 'workspacePublicPath':
+          workspacePublicPath = msg.path;
           break;
         case 'log':
           logs += msg.text;
@@ -267,7 +273,7 @@
     <div class="path-group">
       <label>root</label>
       <div class="file-row">
-        <input type="text" value={rootPath} placeholder="Optional" readonly />
+        <input type="text" value={rootPath} placeholder={workspacePublicPath || 'Optional'} readonly />
         <button onclick={() => pickFolder('root', 'Select Root Directory')}>Browse</button>
       </div>
     </div>
