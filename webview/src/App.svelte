@@ -111,8 +111,16 @@
     if (printwidth !== 120) parts.push(`--printwidth ${printwidth}`);
     if (precision !== 2) parts.push(`--precision ${precision}`);
     if (dracoPath) parts.push(`--draco "${dracoPath}"`);
-    const effectiveRoot = rootPath || workspacePublicPath;
-    if (effectiveRoot) parts.push(`--root "${effectiveRoot.replace(/\\/g, '/')}"`);
+    if (rootPath) {
+      parts.push(`--root "${rootPath}"`);
+    } else {
+      const pub = workspacePublicPath.replace(/\/+$/, '');
+      if (pub && normalizedModelPath.startsWith(pub + '/')) {
+        const rel = normalizedModelPath.slice(pub.length);             // /Adventurer.glb
+        const dir = rel.substring(0, rel.lastIndexOf('/') + 1);       // /
+        parts.push(`--root "${dir}"`);
+      }
+    }
 
     vscode.postMessage({ type: 'run', command: parts.join(' ') });
   }
