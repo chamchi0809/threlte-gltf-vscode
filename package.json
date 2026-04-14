@@ -4,7 +4,7 @@
   "description": "Side panel GUI for the @threlte/gltf CLI",
   "publisher": "chamchi",
   "repository": {
-    "url": "https://github.com/chamchi0809/github-actions-vscode"
+    "url": "https://github.com/chamchi0809/threlte-gltf-vscode"
   },
   "version": "0.0.1",
   "engines": {
