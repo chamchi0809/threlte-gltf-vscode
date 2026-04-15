@@ -1,12 +1,12 @@
 <script lang="ts">
-  import { vscode } from './vscode';
+  import { vscode } from "./vscode";
 
   const saved = (vscode.getState() as Record<string, unknown>) ?? {};
 
-  let modelPath = $state((saved.modelPath as string) ?? '');
-  let outputPath = $state((saved.outputPath as string) ?? '');
+  let modelPath = $state((saved.modelPath as string) ?? "");
+  let outputPath = $state((saved.outputPath as string) ?? "");
   let running = $state(false);
-  let logs = $state('');
+  let logs = $state("");
   let logEl: HTMLPreElement;
 
   // flags
@@ -25,7 +25,7 @@
   let keepmeshes = $state((saved.keepmeshes as boolean) ?? false);
   let keepmaterials = $state((saved.keepmaterials as boolean) ?? false);
   let resolution = $state((saved.resolution as number) ?? 1024);
-  let format = $state((saved.format as string) ?? 'webp');
+  let format = $state((saved.format as string) ?? "webp");
 
   // simplify group
   let simplify = $state((saved.simplify as boolean) ?? false);
@@ -38,72 +38,106 @@
   let precision = $state((saved.precision as number) ?? 2);
 
   // paths
-  let dracoPath = $state((saved.dracoPath as string) ?? '');
-  let rootPath = $state((saved.rootPath as string) ?? '');
-  let workspacePublicPath = $state('');
+  let dracoPath = $state((saved.dracoPath as string) ?? "");
+  let rootPath = $state((saved.rootPath as string) ?? "");
+  let workspacePublicPath = $state("");
 
   const flags = [
-    { get: () => types, set: (v: boolean) => (types = v), name: 'types' },
-    { get: () => keepnames, set: (v: boolean) => (keepnames = v), name: 'keepnames' },
-    { get: () => keepgroups, set: (v: boolean) => (keepgroups = v), name: 'keepgroups' },
-    { get: () => meta, set: (v: boolean) => (meta = v), name: 'meta' },
-    { get: () => shadows, set: (v: boolean) => (shadows = v), name: 'shadows' },
-    { get: () => preload, set: (v: boolean) => (preload = v), name: 'preload' },
-    { get: () => suspense, set: (v: boolean) => (suspense = v), name: 'suspense' },
-    { get: () => isolated, set: (v: boolean) => (isolated = v), name: 'isolated' },
-    { get: () => debug, set: (v: boolean) => (debug = v), name: 'debug' },
+    { get: () => types, set: (v: boolean) => (types = v), name: "types" },
+    {
+      get: () => keepnames,
+      set: (v: boolean) => (keepnames = v),
+      name: "keepnames",
+    },
+    {
+      get: () => keepgroups,
+      set: (v: boolean) => (keepgroups = v),
+      name: "keepgroups",
+    },
+    { get: () => meta, set: (v: boolean) => (meta = v), name: "meta" },
+    { get: () => shadows, set: (v: boolean) => (shadows = v), name: "shadows" },
+    { get: () => preload, set: (v: boolean) => (preload = v), name: "preload" },
+    {
+      get: () => suspense,
+      set: (v: boolean) => (suspense = v),
+      name: "suspense",
+    },
+    {
+      get: () => isolated,
+      set: (v: boolean) => (isolated = v),
+      name: "isolated",
+    },
+    { get: () => debug, set: (v: boolean) => (debug = v), name: "debug" },
   ];
 
   // Auto-save settings
   $effect(() => {
     vscode.setState({
-      modelPath, outputPath,
-      types, keepnames, keepgroups, meta, shadows, preload, suspense, isolated, debug,
-      transform, keepmeshes, keepmaterials, resolution, format,
-      simplify, weld, ratio, error,
-      printwidth, precision,
-      dracoPath, rootPath,
+      modelPath,
+      outputPath,
+      types,
+      keepnames,
+      keepgroups,
+      meta,
+      shadows,
+      preload,
+      suspense,
+      isolated,
+      debug,
+      transform,
+      keepmeshes,
+      keepmaterials,
+      resolution,
+      format,
+      simplify,
+      weld,
+      ratio,
+      error,
+      printwidth,
+      precision,
+      dracoPath,
+      rootPath,
     });
   });
 
   function pickModel() {
-    vscode.postMessage({ type: 'pickFile', field: 'model' });
+    vscode.postMessage({ type: "pickFile", field: "model" });
   }
 
   function pickOutput() {
-    vscode.postMessage({ type: 'pickOutput', field: 'output' });
+    vscode.postMessage({ type: "pickOutput", field: "output" });
   }
 
   function pickFolder(field: string, title: string) {
-    vscode.postMessage({ type: 'pickFolder', field, title });
+    vscode.postMessage({ type: "pickFolder", field, title });
   }
 
   function run() {
     if (!modelPath || running) return;
     running = true;
-    logs = '';
+    logs = "";
 
-    const normalizedModelPath = modelPath.replace(/\\/g, '/');
-    const parts = ['npx @threlte/gltf@latest', `"${normalizedModelPath}"`];
+    const normalizedModelPath = modelPath.replace(/\\/g, "/");
+    const parts = ["npx @threlte/gltf@latest", `"${normalizedModelPath}"`];
     if (outputPath) parts.push(`--output "${outputPath}"`);
-    if (types) parts.push('--types');
-    if (keepnames) parts.push('--keepnames');
-    if (keepgroups) parts.push('--keepgroups');
-    if (meta) parts.push('--meta');
-    if (shadows) parts.push('--shadows');
-    if (preload) parts.push('--preload');
-    if (suspense) parts.push('--suspense');
-    if (isolated) parts.push('--isolated');
-    if (debug) parts.push('--debug');
+    if (types) parts.push("--types");
+    if (keepnames) parts.push("--keepnames");
+    if (keepgroups) parts.push("--keepgroups");
+    if (meta) parts.push("--meta");
+    if (shadows) parts.push("--shadows");
+    if (preload) parts.push("--preload");
+    if (suspense) parts.push("--suspense");
+    if (isolated) parts.push("--isolated");
+    if (debug) parts.push("--debug");
     if (transform) {
-      parts.push('--transform');
-      if (keepmeshes) parts.push('--keepmeshes');
-      if (keepmaterials) parts.push('--keepmaterials');
+      parts.push("--transform");
+      if (keepmeshes) parts.push("--keepmeshes");
+      if (keepmaterials) parts.push("--keepmaterials");
       if (resolution !== 1024) parts.push(`--resolution ${resolution}`);
-      if (format !== 'webp') parts.push(`--format ${format}`);
+      if (format !== "webp") parts.push(`--format ${format}`);
     }
     if (simplify) {
-      parts.push('--simplify');
+      parts.push("--simplify");
       if (weld !== 0.0001) parts.push(`--weld ${weld}`);
       if (ratio !== 0.75) parts.push(`--ratio ${ratio}`);
       if (error !== 0.001) parts.push(`--error ${error}`);
@@ -111,47 +145,45 @@
     if (printwidth !== 120) parts.push(`--printwidth ${printwidth}`);
     if (precision !== 2) parts.push(`--precision ${precision}`);
     if (dracoPath) parts.push(`--draco "${dracoPath}"`);
-    if (rootPath) {
-      parts.push(`--root "${rootPath}"`);
-    } else {
-      const pub = workspacePublicPath.replace(/\/+$/, '');
-      if (pub && normalizedModelPath.startsWith(pub + '/')) {
-        const rel = normalizedModelPath.slice(pub.length);             // /Adventurer.glb
-        const dir = rel.substring(0, rel.lastIndexOf('/') + 1);       // /
-        parts.push(`--root "${dir}"`);
-      }
+    const effectiveRoot = (rootPath || workspacePublicPath)
+      .replace(/\\/g, "/")
+      .replace(/\/+$/, "");
+    if (effectiveRoot && normalizedModelPath.startsWith(effectiveRoot + "/")) {
+      const rel = normalizedModelPath.slice(effectiveRoot.length);
+      const dir = rel.substring(0, rel.lastIndexOf("/") + 1);
+      parts.push(`--root "${dir}"`);
     }
 
-    vscode.postMessage({ type: 'run', command: parts.join(' ') });
+    vscode.postMessage({ type: "run", command: parts.join(" ") });
   }
 
   $effect(() => {
     const handler = (e: MessageEvent) => {
       const msg = e.data;
       switch (msg.type) {
-        case 'filePicked':
-          if (msg.field === 'model') modelPath = msg.path;
-          else if (msg.field === 'output') outputPath = msg.path;
-          else if (msg.field === 'draco') dracoPath = msg.path;
-          else if (msg.field === 'root') rootPath = msg.path;
+        case "filePicked":
+          if (msg.field === "model") modelPath = msg.path;
+          else if (msg.field === "output") outputPath = msg.path;
+          else if (msg.field === "draco") dracoPath = msg.path;
+          else if (msg.field === "root") rootPath = msg.path;
           break;
-        case 'workspacePublicPath':
+        case "workspacePublicPath":
           workspacePublicPath = msg.path;
           break;
-        case 'log':
+        case "log":
           logs += msg.text;
           break;
-        case 'done':
+        case "done":
           running = false;
           logs += `\nExited with code ${msg.code}`;
           if (msg.code === 0 && outputPath) {
-            vscode.postMessage({ type: 'openFile', path: outputPath });
+            vscode.postMessage({ type: "openFile", path: outputPath });
           }
           break;
       }
     };
-    window.addEventListener('message', handler);
-    return () => window.removeEventListener('message', handler);
+    window.addEventListener("message", handler);
+    return () => window.removeEventListener("message", handler);
   });
 
   $effect(() => {
@@ -165,7 +197,12 @@
   <section>
     <h3>Model</h3>
     <div class="file-row">
-      <input type="text" value={modelPath} placeholder=".gltf / .glb" readonly />
+      <input
+        type="text"
+        value={modelPath}
+        placeholder=".gltf / .glb"
+        readonly
+      />
       <button onclick={pickModel}>Browse</button>
     </div>
   </section>
@@ -188,7 +225,8 @@
           <input
             type="checkbox"
             checked={f.get()}
-            onchange={(e: Event) => f.set((e.target as HTMLInputElement).checked)}
+            onchange={(e: Event) =>
+              f.set((e.target as HTMLInputElement).checked)}
           />
           <span>{f.name}</span>
         </label>
@@ -275,20 +313,29 @@
       <label>draco</label>
       <div class="file-row">
         <input type="text" value={dracoPath} placeholder="Optional" readonly />
-        <button onclick={() => pickFolder('draco', 'Select Draco Binary Path')}>Browse</button>
+        <button onclick={() => pickFolder("draco", "Select Draco Binary Path")}
+          >Browse</button
+        >
       </div>
     </div>
     <div class="path-group">
       <label>root</label>
       <div class="file-row">
-        <input type="text" value={rootPath} placeholder={workspacePublicPath || 'Optional'} readonly />
-        <button onclick={() => pickFolder('root', 'Select Root Directory')}>Browse</button>
+        <input
+          type="text"
+          value={rootPath}
+          placeholder={workspacePublicPath || "Optional"}
+          readonly
+        />
+        <button onclick={() => pickFolder("root", "Select Root Directory")}
+          >Browse</button
+        >
       </div>
     </div>
   </section>
 
   <button class="run-btn" onclick={run} disabled={!modelPath || running}>
-    {running ? 'Running...' : 'Generate'}
+    {running ? "Running..." : "Generate"}
   </button>
 
   {#if logs}
@@ -369,7 +416,7 @@
     padding: 2px 0;
   }
 
-  .flag input[type='checkbox'] {
+  .flag input[type="checkbox"] {
     accent-color: var(--btn-bg);
   }
 
